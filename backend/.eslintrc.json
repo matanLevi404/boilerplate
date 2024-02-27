@@ -1,0 +1,18 @@
+{
+	"root": true,
+	"env": {
+		"node": true,
+		"es6": true
+	},
+	"extends": "eslint:recommended",
+	"parserOptions": {
+		"parser": "@babel/eslint-parser",
+		"ecmaVersion": "latest",
+		"sourceType": "module"
+	},
+	"rules": {
+		"no-unused-vars": ["warn", { "argsIgnorePattern": "^_.+$" }],
+		"linebreak-style": "off",
+		"max-len": ["warn", { "code": 180, "tabWidth": 2 }]
+	}
+}
