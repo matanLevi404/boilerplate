@@ -3,7 +3,7 @@ import cors from 'cors';
 import _ from 'lodash';
 import { enums } from '../utils/index.js';
 import entitiesCollection from '../services/entitiesCollection/entitiesCollection.js';
-const x = 5;
+
 const corsPolicy = cors({ origin: '*', methods: _.map(enums.methods, (value, _key) => _.upperCase(value)), credentials: true });
 
 const jsonBodyParser = express.json({ limit: '50mb' });
