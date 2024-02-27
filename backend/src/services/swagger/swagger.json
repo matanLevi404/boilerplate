@@ -32,6 +32,164 @@
           }
         }
       }
+    },
+    "/api/users/getUsersById/{userId}": {
+      "get": {
+        "summary": "Get Users By Id",
+        "tags": [
+          "users"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "userId",
+            "schema": {
+              "type": "number"
+            },
+            "example": 152
+          },
+          {
+            "in": "query",
+            "name": "id",
+            "schema": {
+              "type": "number"
+            },
+            "example": 15
+          },
+          {
+            "in": "query",
+            "name": "name",
+            "schema": {
+              "type": "string"
+            },
+            "example": "John Doe"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Get Users By Id"
+          },
+          "400": {
+            "description": "Bad request: failed to Get Users By Id"
+          }
+        }
+      }
+    },
+    "/api/users/addUser/{id}": {
+      "post": {
+        "summary": "Add User",
+        "tags": [
+          "users"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "required": false,
+            "schema": {
+              "properties": {
+                "username": {
+                  "type": "string"
+                },
+                "email": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "number"
+            },
+            "example": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Add User"
+          },
+          "400": {
+            "description": "Bad request: failed to Add User"
+          }
+        }
+      }
+    },
+    "/api/users/updateUserById": {
+      "put": {
+        "summary": "Update User By Id",
+        "tags": [
+          "users"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "required": false,
+            "schema": {
+              "properties": {
+                "username": {
+                  "type": "number"
+                },
+                "email": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "number"
+            },
+            "example": 123
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Update User By Id"
+          },
+          "400": {
+            "description": "Bad request: failed to Update User By Id"
+          }
+        }
+      }
+    },
+    "/api/users/{userId}/deleteUserById/{id}": {
+      "delete": {
+        "summary": "Delete User By Id",
+        "tags": [
+          "users"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "userId",
+            "schema": {
+              "type": "number"
+            },
+            "example": 1
+          },
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "number"
+            },
+            "example": 123
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Delete User By Id"
+          },
+          "400": {
+            "description": "Bad request: failed to Delete User By Id"
+          }
+        }
+      }
     }
   }
 }
