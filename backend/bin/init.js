@@ -2,9 +2,11 @@ import 'dotenv/config.js';
 import http from 'http';
 import { initApp } from '../src/app/app.js';
 import Terminus from '@godaddy/terminus';
+import { initServices } from '../src/services/index.js';
 import healthChecksConfig from '../src/utils/healthCheck.js';
 
 const main = async () => {
+	await initServices();
 	const app = initApp();
 	const server = http.createServer(app);
 	server.on('listening', () => {
