@@ -49,4 +49,9 @@ const executeControllerFunction = ({ action }) => {
 	};
 };
 
-export { jsonBodyParser, corsPolicy, apiRoutes, apiResponses };
+const errorHandler = async (error, _request, response, _next) => {
+	const { httpCode } = error;
+	response.status(httpCode).send(error);
+};
+
+export { jsonBodyParser, corsPolicy, apiRoutes, apiResponses, errorHandler };

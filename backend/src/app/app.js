@@ -1,5 +1,5 @@
 import express from 'express';
-import { jsonBodyParser, corsPolicy, apiResponses, apiRoutes } from './middlewares.js';
+import { jsonBodyParser, corsPolicy, apiResponses, apiRoutes, errorHandler } from './middlewares.js';
 import swaggerUi from 'swagger-ui-express';
 import swaggerJsdoc from 'swagger-jsdoc';
 import swagger from '../services/swagger/swagger.js';
@@ -10,6 +10,7 @@ const initApp = () => {
 	app.use('/', jsonBodyParser);
 	app.use('/api', jsonBodyParser, apiRoutes(), apiResponses());
 	app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerJsdoc(swagger.swaggerConfig)));
+	app.use(errorHandler);
 	return app;
 };
 
