@@ -1,6 +1,7 @@
 import fs from 'fs';
 import _ from 'lodash';
 import entitiesCollection from '../entitiesCollection/entitiesCollection.js';
+import { zodToJsonSchema } from 'zod-to-json-schema';
 import { files } from '../../utils/index.js';
 
 const packageJSON = JSON.parse(fs.readFileSync('package.json'));
@@ -8,11 +9,16 @@ const packageJSON = JSON.parse(fs.readFileSync('package.json'));
 class Swagger {
 	swaggerConfig = {
 		definition: {
-			openApi: '3.0.0',
+			openapi: '3.1.0',
 			info: {
 				title: 'Bank Backend: REST API Docs',
 				version: packageJSON.version
 			},
+			servers: [
+				{
+					url: 'http://localhost:3000'
+				}
+			],
 			components: {
 				securitySchemas: {
 					bearerAuth: {
@@ -22,11 +28,6 @@ class Swagger {
 					}
 				}
 			},
-			security: [
-				{
-					bearerAuth: []
-				}
-			],
 			paths: {
 				'/healthcheck': {
 					get: {
@@ -51,11 +52,13 @@ class Swagger {
 			(result, { entityName, controllerModal }) => {
 				_.forEach(controllerModal, (value, key) => {
 					const routePath = value?.path ? this.#getRoutePath({ path: value?.path }) : `${entityName}/${key}`;
+					const schemas = value?.schemas;
 					const path = {
 						[value.method]: {
 							summary: _.startCase(key),
 							tags: [entityName],
-							parameters: this.#buildSwaggerParameters({ body: value?.body, params: value?.params, query: value?.query }),
+							parameters: this.#buildSwaggerParameters(schemas),
+							requestBody: this.#buildRequestBody(schemas),
 							responses: {
 								200: {
 									description: value?.description ?? _.startCase(key)
@@ -82,41 +85,55 @@ class Swagger {
 		return convertedPath;
 	};
 
-	#buildSwaggerParameters = ({ body, params, query }) => {
-		const parameters = [this.#buildRequestBody({ body }), ...this.#buildRequestParams({ params }), ...this.#buildRequestParams({ query })];
+	#buildSwaggerParameters = ({ params, query }) => {
+		const parameters = [...this.#buildRequestParams({ params }), ...this.#buildRequestParams({ query })];
 		return _.compact(parameters);
 	};
 
-	#buildRequestBody = ({ body }) => {
+	#buildRequestBody = ({ body = null }) => {
 		if (!_.size(body)) {
 			return null;
 		}
-		const properties = _.transform(
-			body,
-			(result, value, key) => {
-				result[key] = { type: typeof value };
-			},
-			{}
-		);
+		const adaptedBody = _.omit(zodToJsonSchema(body), ['additionalProperties', '$schema']);
 		return {
-			in: 'body',
-			name: 'body',
 			required: false,
-			schema: {
-				properties
+			content: {
+				'application/json': {
+					schema: adaptedBody
+				}
 			}
 		};
 	};
 
-	#buildRequestParams = ({ params, query }) => {
+	#adaptProperties = ({ properties }) => {
+		if (!_.isObject(properties) || _.isNull(properties)) {
+			return;
+		}
 		return _.transform(
-			params ?? query,
+			properties,
+			(adaptedProperties, value, key) => {
+				const type = value.type;
+				const isObject = type === 'object';
+				const property = _.isArray(type) ? { oneOf: _.map(type, (type) => ({ type })) } : { type: type };
+				adaptedProperties[key] = isObject ? { type: 'object', properties: this.#adaptProperties({ properties: value.properties }) } : property;
+				return adaptedProperties;
+			},
+			{}
+		);
+	};
+
+	#buildRequestParams = ({ params, query }) => {
+		if (!params && !query) {
+			return [];
+		}
+		const { properties } = params ? zodToJsonSchema(params) : zodToJsonSchema(query);
+		return _.transform(
+			properties,
 			(result, value, key) => {
 				const param = {
 					in: params ? 'path' : 'query',
 					name: key,
-					schema: { type: typeof value },
-					example: value
+					schema: { type: value?.type }
 				};
 				result.push(param);
 			},

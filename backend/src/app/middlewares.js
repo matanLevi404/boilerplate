@@ -1,8 +1,10 @@
 import express from 'express';
 import cors from 'cors';
 import _ from 'lodash';
-import { enums } from '../utils/index.js';
+import chalk from 'chalk';
+import { AppError, enums } from '../utils/index.js';
 import entitiesCollection from '../services/entitiesCollection/entitiesCollection.js';
+import en from '../../local/index.js';
 
 const corsPolicy = cors({ origin: '*', methods: _.map(enums.methods, (value, _key) => _.upperCase(value)), credentials: true });
 
@@ -14,7 +16,10 @@ const apiRoutes = () => {
 	_.forEach(entities, ({ entityName, controllerModal }) => {
 		_.forEach(controllerModal, (value, key) => {
 			const path = value?.path ?? `${entityName}/${key}`;
-			router[value.method](`/${path}`, executeControllerFunction({ action: value.action }));
+			const schemas = value?.schemas;
+			_.isEmpty(schemas)
+				? router[value.method](`/${path}`, executeControllerFunction({ action: value.action }))
+				: router[value.method](`/${path}`, controllerValidation(schemas), executeControllerFunction({ action: value.action }));
 		});
 	});
 	return router;
@@ -46,6 +51,36 @@ const executeControllerFunction = ({ action }) => {
 			request.preMadeResponse = { type: response.dataType || 'json', responseObj };
 			next(error);
 		});
+	};
+};
+
+const controllerValidation = ({ body = null, params = null, query = null, headers = null }) => {
+	return (request, _response, next) => {
+		try {
+			const { body: requestBody, params: requestParams, query: requestQuery } = request;
+			if (_.size(requestBody) && !body) {
+				console.warn(chalk.yellow(en.app.validations.controllers.body));
+			}
+			if (_.size(requestParams) && !params) {
+				console.warn(chalk.yellow(en.app.validations.controllers.params));
+			}
+			if (_.size(requestQuery) && !query) {
+				console.warn(chalk.yellow(en.app.validations.controllers.query));
+			}
+			body ? body.parse(request.body) : null;
+			params ? params.parse(request.params) : null;
+			query ? query.parse(request.query) : null;
+			headers ? headers.parse(request.headers) : null;
+			next();
+		} catch (error) {
+			const validationError = new AppError({
+				name: en.app.validations.error.name,
+				httpCode: 400,
+				description: en.app.validations.error.description,
+				extraDetails: error.issues
+			});
+			next(validationError);
+		}
 	};
 };
 
