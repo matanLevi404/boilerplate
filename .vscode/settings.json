@@ -3,6 +3,7 @@
 	"editor.tabSize": 4,
 	"editor.autoClosingBrackets": "always",
 	"editor.bracketPairColorization.enabled": true,
+	"editor.scrollBeyondLastLine": false,
 	"editor.defaultFormatter": "esbenp.prettier-vscode",
 	"[sql]": {
 		"editor.defaultFormatter": "adpyke.vscode-sql-formatter"

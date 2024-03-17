@@ -1,9 +1,14 @@
 {
-  "openApi": "3.0.0",
+  "openapi": "3.1.0",
   "info": {
     "title": "Bank Backend: REST API Docs",
     "version": "1.0.0"
   },
+  "servers": [
+    {
+      "url": "http://localhost:3000"
+    }
+  ],
   "components": {
     "securitySchemas": {
       "bearerAuth": {
@@ -13,11 +18,6 @@
       }
     }
   },
-  "security": [
-    {
-      "bearerAuth": []
-    }
-  ],
   "paths": {
     "/healthcheck": {
       "get": {
@@ -45,26 +45,24 @@
             "name": "userId",
             "schema": {
               "type": "number"
-            },
-            "example": 152
+            }
           },
           {
             "in": "query",
             "name": "id",
             "schema": {
               "type": "number"
-            },
-            "example": 15
+            }
           },
           {
             "in": "query",
             "name": "name",
             "schema": {
-              "type": "string"
-            },
-            "example": "John Doe"
+              "type": "number"
+            }
           }
         ],
+        "requestBody": null,
         "responses": {
           "200": {
             "description": "Get Users By Id"
@@ -83,29 +81,67 @@
         ],
         "parameters": [
           {
-            "in": "body",
-            "name": "body",
-            "required": false,
-            "schema": {
-              "properties": {
-                "username": {
-                  "type": "string"
-                },
-                "email": {
-                  "type": "string"
-                }
-              }
-            }
-          },
-          {
             "in": "path",
             "name": "id",
             "schema": {
-              "type": "number"
-            },
-            "example": 1
+              "type": [
+                "number",
+                "string"
+              ]
+            }
           }
         ],
+        "requestBody": {
+          "required": false,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "username": {
+                    "type": [
+                      "string",
+                      "number"
+                    ]
+                  },
+                  "email": {
+                    "type": "string"
+                  },
+                  "extra": {
+                    "type": "object",
+                    "properties": {
+                      "details": {
+                        "type": "boolean"
+                      },
+                      "indet": {
+                        "type": "object",
+                        "properties": {
+                          "done": {
+                            "type": "null"
+                          }
+                        },
+                        "required": [
+                          "done"
+                        ],
+                        "additionalProperties": false
+                      }
+                    },
+                    "required": [
+                      "details",
+                      "indet"
+                    ],
+                    "additionalProperties": false
+                  }
+                },
+                "required": [
+                  "username",
+                  "email",
+                  "extra"
+                ]
+              }
+            }
+          }
+        },
         "responses": {
           "200": {
             "description": "Add User"
@@ -122,31 +158,29 @@
         "tags": [
           "users"
         ],
-        "parameters": [
-          {
-            "in": "body",
-            "name": "body",
-            "required": false,
-            "schema": {
-              "properties": {
-                "username": {
-                  "type": "number"
+        "parameters": [],
+        "requestBody": {
+          "required": false,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "username": {
+                    "type": "number"
+                  },
+                  "email": {
+                    "type": "string"
+                  }
                 },
-                "email": {
-                  "type": "string"
-                }
+                "required": [
+                  "username",
+                  "email"
+                ]
               }
             }
-          },
-          {
-            "in": "path",
-            "name": "id",
-            "schema": {
-              "type": "number"
-            },
-            "example": 123
           }
-        ],
+        },
         "responses": {
           "200": {
             "description": "Update User By Id"
@@ -169,18 +203,17 @@
             "name": "userId",
             "schema": {
               "type": "number"
-            },
-            "example": 1
+            }
           },
           {
             "in": "path",
             "name": "id",
             "schema": {
               "type": "number"
-            },
-            "example": 123
+            }
           }
         ],
+        "requestBody": null,
         "responses": {
           "200": {
             "description": "Delete User By Id"

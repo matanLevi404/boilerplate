@@ -4,6 +4,7 @@ import { initApp } from '../src/app/app.js';
 import Terminus from '@godaddy/terminus';
 import { initServices } from '../src/services/index.js';
 import healthChecksConfig from '../src/utils/healthCheck.js';
+import chalk from 'chalk';
 
 const main = async () => {
 	await initServices();
@@ -11,7 +12,8 @@ const main = async () => {
 	const server = http.createServer(app);
 	server.on('listening', () => {
 		console.info(`Listening on port: ${server.address()?.port}`);
-		console.info(`Docs is available at http://localhost:${server.address()?.port}/docs`);
+		const myCustomColor = chalk.rgb(97, 219, 251);
+		console.log('Docs is available at:', myCustomColor(`http://localhost:${server.address()?.port}/docs`));
 	});
 	Terminus.createTerminus(server, healthChecksConfig);
 	server.listen(process.env.SERVER_PORT ?? 1000);
