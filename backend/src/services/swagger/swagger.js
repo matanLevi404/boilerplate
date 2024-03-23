@@ -2,7 +2,6 @@ import fs from 'fs';
 import _ from 'lodash';
 import entitiesCollection from '../entitiesCollection/entitiesCollection.js';
 import { zodToJsonSchema } from 'zod-to-json-schema';
-import { files } from '../../utils/index.js';
 
 const packageJSON = JSON.parse(fs.readFileSync('package.json'));
 
@@ -146,8 +145,6 @@ class Swagger {
 		const { entities } = entitiesCollection;
 		const paths = this.swaggerConfig.definition.paths;
 		this.swaggerConfig.definition.paths = { ...paths, ...this.#buildSwaggerPaths({ entities }) };
-		const path = files.getFilePath('/src/services/swagger/swagger.json');
-		fs.writeFileSync(path, JSON.stringify(this.swaggerConfig.definition, null, 2), 'utf-8');
 		console.timeEnd('Swagger Init');
 	};
 }

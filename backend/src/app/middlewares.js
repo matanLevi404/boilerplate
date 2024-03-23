@@ -59,13 +59,13 @@ const controllerValidation = ({ body = null, params = null, query = null, header
 		try {
 			const { body: requestBody, params: requestParams, query: requestQuery } = request;
 			if (_.size(requestBody) && !body) {
-				console.warn(chalk.yellow(en.app.validations.controllers.body));
+				console.warn(chalk.yellowBright(en.app.validations.controllers.body));
 			}
 			if (_.size(requestParams) && !params) {
-				console.warn(chalk.yellow(en.app.validations.controllers.params));
+				console.warn(chalk.yellowBright(en.app.validations.controllers.params));
 			}
 			if (_.size(requestQuery) && !query) {
-				console.warn(chalk.yellow(en.app.validations.controllers.query));
+				console.warn(chalk.yellowBright(en.app.validations.controllers.query));
 			}
 			body ? body.parse(request.body) : null;
 			params ? params.parse(request.params) : null;

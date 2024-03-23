@@ -14,5 +14,13 @@
 		"no-unused-vars": ["warn", { "argsIgnorePattern": "^_.+$" }],
 		"linebreak-style": "off",
 		"max-len": ["warn", { "code": 180, "tabWidth": 2 }]
-	}
+	},
+	"overrides": [
+		{
+			"files": ["**/*.test.js", "**/*.test.jsx", "**/*.spec.js", "**/*.spec.jsx"],
+			"env": {
+				"jest": true
+			}
+		}
+	]
 }
