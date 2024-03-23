@@ -2,11 +2,11 @@ import z from 'zod';
 
 const getUsersByIdSchemas = () => {
 	const params = z.object({
-		userId: z.number()
+		userId: z.string().regex(/\d+/)
 	});
 	const query = z.object({
-		id: z.number(),
-		name: z.number()
+		id: z.string(),
+		name: z.string()
 	});
 	return { params, query };
 };

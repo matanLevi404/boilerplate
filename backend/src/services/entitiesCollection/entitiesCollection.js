@@ -2,8 +2,11 @@ import fs from 'fs';
 import _ from 'lodash';
 import path, { dirname } from 'path';
 import { files } from '../../utils/index.js';
+import { fileURLToPath } from 'url';
 
-const __dirname = dirname('C:/Users/97252/Desktop/learnings/boiler-plate/backend/src/services/entitiesCollection/entitiesCollection.js');
+const currentFileURL = import.meta.url;
+const currentFilePath = fileURLToPath(currentFileURL);
+const __dirname = dirname(currentFilePath);
 
 class EntitiesCollection {
 	entities = {};
@@ -36,7 +39,6 @@ class EntitiesCollection {
 		console.time('EntitiesCollection Init');
 		const entities = await this.getAllBackendEntities();
 		this.entities = entities;
-		this.#buildBackendEntitiesFile();
 		console.timeEnd('EntitiesCollection Init');
 	};
 }
