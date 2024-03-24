@@ -15,14 +15,18 @@ class TeardownPlugin {
 	}
 
 	async run(_globalConfig, _updateConfigAndRun) {
-		console.log('\nRunning teardown...');
-		await global.app.close(() => {
-			console.log('Server is closing...');
-			console.log('Exiting...');
-			process.exit();
-		});
-		delete global.app;
-		delete global.isServerUp;
+		if (global.isServerUp) {
+			console.log('\nRunning teardown...');
+			await global.app.close(() => {
+				console.log('Server is closing...');
+				console.log('Exiting...');
+				process.exit();
+			});
+			delete global.app;
+			delete global.isServerUp;
+			return;
+		}
+		process.exit();
 	}
 }
 
